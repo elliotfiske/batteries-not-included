@@ -6,7 +6,7 @@ const nextConfig = {
   experimental: {
     // Required:
     appDir: true,
-    assetPrefix: isProd ? '/your-github-repo-name/' : '',
+    assetPrefix: isProd ? '/tb-santa-jam-2022' : '',
     images: {
       unoptimized: true,
     },
