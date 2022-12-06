@@ -5,6 +5,7 @@ const nextConfig = {
     // Required:
     appDir: true,
   },
+  basePath: '/tb-santa-jam-2022',
 };
 
 module.exports = nextConfig;
