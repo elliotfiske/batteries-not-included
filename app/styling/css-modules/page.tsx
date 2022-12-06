@@ -22,6 +22,10 @@ export default function Page() {
         <SkeletonCard />
         <SkeletonCard />
       </div>
+      <a href="https://www.freepik.com/free-vector/pixel-robots-icons-8-bit-bots-isolated-set-robots-pixel-style-illustration-color-robot_13031467.htm#query=robot%20pixel%20art&position=0&from_view=keyword">
+        Image by macrovector
+      </a>
+      on Freepik
     </div>
   );
 }
