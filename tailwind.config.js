@@ -1,6 +1,7 @@
 /** @type {import("tailwindcss").Config} */
 module.exports = {
     content: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+    safelist: ["bg-green-500", "bg-red-500", "bg-gray-700"],
     theme: {
         extend: {
             // boxShadow: {
@@ -20,10 +21,6 @@ module.exports = {
                 "flicker-me": "flicker 5s none",
             },
             keyframes: ({ theme }) => ({
-                flicker: [0, 12, 14, 16, 30, 40, 80, 100].reduce((acc, val, ndx) => {
-                    acc[`${val}%`] = { opacity: ndx % 2 === 0 ? 1 : 0 }
-                    return acc
-                }, {}),
                 rerender: {
                     "0%": {
                         "border-color": theme("colors.vercel.pink"),

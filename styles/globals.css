@@ -14,6 +14,10 @@
         0px 0px 2px rgba(0, 206, 0, 0);
     }
 
+    .glow-green {
+        box-shadow: 0px 0px 12px 9px rgba(54, 255, 84, 0.73);
+    }
+
     @keyframes yourAnimation {
         0% {
             color: white;

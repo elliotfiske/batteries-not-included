@@ -3,7 +3,7 @@ import { BatteryPuzzle } from "../components/battery-puzzle"
 
 export default function Home() {
     return (
-        <div className="flex">
+        <div className="width-full flex justify-center">
             <BatteryPuzzle />
             <Head>
                 <title>Create Next App!</title>
