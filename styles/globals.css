@@ -1,3 +1,56 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
+
+@responsive {
+    .text-shadow-red {
+        text-shadow: 0 0 10px #fff, 0 0 18px #fff, 0 0 24px #ff4918, 0 0 63px #ff4918, 0 0 80px #ff4918,
+        0px 0px 7px rgba(206, 0, 0, 0);
+    }
+
+    .text-shadow-green {
+        text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
+        0px 0px 2px rgba(0, 206, 0, 0);
+    }
+
+    @keyframes yourAnimation {
+        0% {
+            color: white;
+            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
+            0px 0px 2px rgba(0, 206, 0, 0);
+        }
+        9% {
+            color: grey;
+            text-shadow: none;
+        }
+        24% {
+            color: white;
+            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
+            0px 0px 2px rgba(0, 206, 0, 0);
+        }
+        54% {
+            color: grey;
+            text-shadow: none;
+        }
+        79% {
+            color: white;
+            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
+            0px 0px 2px rgba(0, 206, 0, 0);
+        }
+        92% {
+            color: grey;
+            text-shadow: none;
+        }
+        96% {
+            color: white;
+            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
+            0px 0px 2px rgba(0, 206, 0, 0);
+        }
+    }
+
+    .flicker-on {
+        animation: flicker 1s none;
+        animation-timing-function: step-start;
+    }
+}

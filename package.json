@@ -10,12 +10,6 @@
     "format": "prettier --write \"**/*.{js,ts,tsx,md}\"",
     "postinstall": "npm run tailwind"
   },
-  "prettier": {
-    "arrowParens": "always",
-    "semi": true,
-    "trailingComma": "all",
-    "singleQuote": true
-  },
   "dependencies": {
     "clsx": "1.2.1",
     "concurrently": "7.5.0",
