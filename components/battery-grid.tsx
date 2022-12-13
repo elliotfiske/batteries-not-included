@@ -1,81 +1,9 @@
 import React, { useState } from "react"
 import { fill } from "lodash"
 import { RowTotaller } from "./row-totaller"
+import { BatteryTile } from "./BatteryTile"
 
-export type Fill = "red" | "green" | "empty"
-
-function classFromFill(fill: Fill) {
-    switch (fill) {
-        case "red":
-            return "red-500"
-        case "green":
-            return "green-500"
-        case "empty":
-            return "gray-700"
-    }
-}
-
-function textFromFill(fill: Fill) {
-    switch (fill) {
-        case "red":
-            return "–"
-        case "green":
-            return "+"
-        case "empty":
-            return ""
-    }
-}
-
-/*
- 0-1 is horizontal battery
- 2-3 is vertical battery
- */
-const horizontalCommonClasses = "absolute flex justify-center h-16 w-20 border-2 border-white text-5xl"
-const verticalCommonClasses = "absolute flex justify-center h-20 w-16 border-2 border-white text-5xl"
-
-function ZeroGuy({ fill }: { fill: Fill }) {
-    return (
-        <div className="flex h-24 items-center justify-end">
-            <div className={`h-16 w-20 rounded-l-lg border-r-0 bg-${classFromFill(fill)} ${horizontalCommonClasses}`}>
-                {textFromFill(fill)}
-                <div className={`absolute top-[-2px] left-0 h-16 w-20 border-r-2`} />
-            </div>
-        </div>
-    )
-}
-
-function OneGuy({ fill }: { fill: Fill }) {
-    return (
-        <div className="flex h-24 items-center justify-start">
-            <div className={`h-16 w-20 rounded-r-lg border-l-0 bg-${classFromFill(fill)} ${horizontalCommonClasses}`}>
-                {textFromFill(fill)}
-                <div className={`absolute top-[-2px] left-0 h-16 w-20 border-l-2`} />
-            </div>
-        </div>
-    )
-}
-
-function TwoGuy({ fill }: { fill: Fill }) {
-    return (
-        <div className="flex h-24 flex-col items-center justify-end">
-            <div className={`rounded-t-lg border-b-0 bg-${classFromFill(fill)} ${verticalCommonClasses}`}>
-                <div className="mt-2">{textFromFill(fill)}</div>
-            </div>
-            <div className={`absolute h-20 w-16 border-b-2`} />
-        </div>
-    )
-}
-
-function ThreeGuy({ fill }: { fill: Fill }) {
-    return (
-        <div className="flex h-24 flex-col items-center justify-start">
-            <div className={`rounded-b-lg border-t-0 bg-${classFromFill(fill)} ${verticalCommonClasses}`}>
-                <div className="mt-2">{textFromFill(fill)}</div>
-            </div>
-            <div className={`absolute h-20 w-16 border-t`} />
-        </div>
-    )
-}
+export type Fill = "red" | "green" | "empty" | "hella-empty"
 
 const grid = [
     [0, 1, 0, 1, 0, 1],
@@ -90,6 +18,10 @@ const topRow = [3, 1, 3, 1, 2, 2]
 const leftColumn = [2, 2, 2, 1, 2, 3]
 const rightColumn = [2, 2, 2, 1, 2, 3]
 const bottomRow = [2, 2, 2, 3, 0, 3]
+
+function emptyish(fill: Fill) {
+    return fill === "empty" || fill === "hella-empty"
+}
 
 function toggleFillState(fills: Fill[], ndx: number) {
     const type = grid[ndx]
@@ -107,7 +39,7 @@ function toggleFillState(fills: Fill[], ndx: number) {
     }
 
     if (type === 0 || type === 2) {
-        if (fills[ndx] === "empty") {
+        if (emptyish(fills[ndx])) {
             newFills[ndx] = "red"
             newFills[partnerInCrime] = "green"
         } else if (fills[ndx] === "red") {
@@ -118,7 +50,7 @@ function toggleFillState(fills: Fill[], ndx: number) {
             newFills[partnerInCrime] = "empty"
         }
     } else if (type === 1 || type === 3) {
-        if (fills[ndx] === "empty") {
+        if (emptyish(fills[ndx])) {
             newFills[ndx] = "green"
             newFills[partnerInCrime] = "red"
         } else if (fills[ndx] === "red") {
@@ -133,8 +65,31 @@ function toggleFillState(fills: Fill[], ndx: number) {
     return newFills
 }
 
+function markDefinitelyEmpty(fills: Fill[], ndx: number) {
+    const type = grid[ndx]
+    const newFills = [...fills]
+
+    let partnerInCrime = -1
+    if (type === 0) {
+        partnerInCrime = ndx + 1
+    } else if (type === 1) {
+        partnerInCrime = ndx - 1
+    } else if (type === 2) {
+        partnerInCrime = ndx + 6
+    } else if (type === 3) {
+        partnerInCrime = ndx - 6
+    }
+
+    newFills[ndx] = "hella-empty"
+    newFills[partnerInCrime] = "hella-empty"
+
+    return newFills
+}
+
 export function BatteryGrid() {
     const [filled, setFilled] = useState<Array<Fill>>(fill(Array(36), "empty"))
+
+    const [ignoreClickOnce, setIgnoreClickOnce] = useState(false)
 
     return (
         <div className="flex flex-row items-center">
@@ -146,19 +101,27 @@ export function BatteryGrid() {
                 <div className="grid grid-cols-6">
                     {grid.map((i, ndx) => {
                         return (
-                            <div
+                            <BatteryTile
                                 key={ndx}
-                                className="h-24 w-24 cursor-pointer border border-dashed border-gray-600 text-white"
                                 onClick={() => {
+                                    if (ignoreClickOnce) {
+                                        setIgnoreClickOnce(false)
+                                        return
+                                    }
+
                                     const newFill = toggleFillState(filled, ndx)
                                     setFilled(newFill)
                                 }}
-                            >
-                                {i == 0 && <ZeroGuy fill={filled[ndx]} />}
-                                {i == 1 && <OneGuy fill={filled[ndx]} />}
-                                {i == 2 && <TwoGuy fill={filled[ndx]} />}
-                                {i == 3 && <ThreeGuy fill={filled[ndx]} />}
-                            </div>
+                                onLongPress={() => {
+                                    const newFill = markDefinitelyEmpty(filled, ndx)
+                                    setFilled(newFill)
+
+                                    setIgnoreClickOnce(true)
+                                }}
+                                i={i}
+                                filled={filled}
+                                ndx={ndx}
+                            />
                         )
                     })}
                 </div>
