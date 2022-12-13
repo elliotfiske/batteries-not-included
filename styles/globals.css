@@ -4,6 +4,26 @@
 @tailwind variants;
 
 @responsive {
+    html {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    body {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: black;
+    }
+
+    #__next {
+        height: 100%;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+
     .text-shadow-red {
         text-shadow: 0 0 10px #fff, 0 0 18px #fff, 0 0 24px #ff4918, 0 0 63px #ff4918, 0 0 80px #ff4918,
         0px 0px 7px rgba(206, 0, 0, 0);
@@ -12,6 +32,14 @@
     .text-shadow-green {
         text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
         0px 0px 2px rgba(0, 206, 0, 0);
+    }
+
+    .subtle-text-shadow-green {
+        text-shadow: 0 0 30px #fff, 0 0 55px #49ff18, 0px 0px 2px rgba(0, 206, 0, 0);
+    }
+
+    .subtle-text-shadow-red {
+        text-shadow: 0 0 30px #fff, 0 0 55px #ff4918, 0px 0px 2px rgba(206, 0, 0, 0);
     }
 
     .glow-green {

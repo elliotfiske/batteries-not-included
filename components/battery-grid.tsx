@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { fill } from "lodash"
 import { RowTotaller } from "./row-totaller"
 
-type Fill = "red" | "green" | "empty"
+export type Fill = "red" | "green" | "empty"
 
 function classFromFill(fill: Fill) {
     switch (fill) {
@@ -31,7 +31,6 @@ function textFromFill(fill: Fill) {
  2-3 is vertical battery
  */
 const horizontalCommonClasses = "absolute flex justify-center h-16 w-20 border-2 border-white text-5xl"
-
 const verticalCommonClasses = "absolute flex justify-center h-20 w-16 border-2 border-white text-5xl"
 
 function ZeroGuy({ fill }: { fill: Fill }) {
@@ -87,6 +86,11 @@ const grid = [
     [3, 3, 3, 0, 1, 3],
 ].flat()
 
+const topRow = [3, 1, 3, 1, 2, 2]
+const leftColumn = [2, 2, 2, 1, 2, 3]
+const rightColumn = [2, 2, 2, 1, 2, 3]
+const bottomRow = [2, 2, 2, 3, 0, 3]
+
 function toggleFillState(fills: Fill[], ndx: number) {
     const type = grid[ndx]
     const newFills = [...fills]
@@ -134,17 +138,17 @@ export function BatteryGrid() {
 
     return (
         <div className="flex flex-row items-center">
-            <div className="width-full bg-black text-center text-8xl text-white">-</div>
-            <RowTotaller side="left" />
+            <div className="width-full subtle-text-shadow-red text-center text-8xl text-red-500">-</div>
+            <RowTotaller side="left" targets={leftColumn} fillState={filled} />
             <div className="flex flex-col">
-                <div className="width-full bg-black text-center text-8xl text-white">+</div>
-                <RowTotaller side="top" />
+                <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
+                <RowTotaller side="top" targets={topRow} fillState={filled} />
                 <div className="grid grid-cols-6">
                     {grid.map((i, ndx) => {
                         return (
                             <div
                                 key={ndx}
-                                className="h-24 w-24 cursor-pointer border border-dashed border-gray-600 bg-black text-white"
+                                className="h-24 w-24 cursor-pointer border border-dashed border-gray-600 text-white"
                                 onClick={() => {
                                     const newFill = toggleFillState(filled, ndx)
                                     setFilled(newFill)
@@ -158,11 +162,11 @@ export function BatteryGrid() {
                         )
                     })}
                 </div>
-                <RowTotaller side="bottom" />
-                <div className="width-full bg-black text-center text-8xl text-white">-</div>
+                <RowTotaller side="bottom" targets={bottomRow} fillState={filled} />
+                <div className="width-full subtle-text-shadow-red z-10  text-center text-8xl text-red-500">-</div>
             </div>
-            <RowTotaller side="right" />
-            <div className="width-full bg-black text-center text-8xl text-white">+</div>
+            <RowTotaller side="right" targets={rightColumn} fillState={filled} />
+            <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
         </div>
     )
 }
