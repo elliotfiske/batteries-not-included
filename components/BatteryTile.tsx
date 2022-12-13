@@ -93,7 +93,7 @@ export function BatteryTile(props: {
 
     return (
         <div
-            className={`h-24 w-24 cursor-pointer border border-dashed border-gray-600 text-white`}
+            className={`h-24 w-24 cursor-pointer select-none border border-dashed border-gray-600 text-white`}
             onClick={props.onClick}
             onMouseUpCapture={(e) => {
                 if (clicksDisabled) {
