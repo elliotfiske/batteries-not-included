@@ -1,6 +1,7 @@
 import React from "react"
 import { BatteryGrid } from "./battery-grid"
 import { BatteryInstructions } from "./BatteryInstructions"
+import ConfettiExplosion from "react-confetti-explosion"
 
 export function BatteryPuzzle() {
     return (

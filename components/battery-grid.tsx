@@ -2,6 +2,46 @@ import React, { useCallback, useEffect, useState } from "react"
 import { fill } from "lodash"
 import { RowTotaller } from "./row-totaller"
 import { BatteryTile } from "./BatteryTile"
+import ConfettiExplosion from "react-confetti-explosion"
+
+const WINNER = [
+    "green",
+    "red",
+    "empty",
+    "empty",
+    "green",
+    "red",
+    "red",
+    "hella-empty",
+    "green",
+    "red",
+    "hella-empty",
+    "green",
+    "green",
+    "hella-empty",
+    "red",
+    "green",
+    "hella-empty",
+    "red",
+    "hella-empty",
+    "hella-empty",
+    "green",
+    "red",
+    "hella-empty",
+    "hella-empty",
+    "red",
+    "green",
+    "red",
+    "empty",
+    "empty",
+    "green",
+    "green",
+    "red",
+    "green",
+    "red",
+    "green",
+    "red",
+]
 
 export type Fill = "red" | "green" | "empty" | "hella-empty"
 
@@ -106,10 +146,31 @@ export function BatteryGrid() {
         window.localStorage.setItem("saved-filled", JSON.stringify(newFilled))
     }, [])
 
+    const [winner, setWinner] = useState(false)
+
+    useEffect(() => {
+        if (
+            filled.every((f, ndx) => {
+                if (f === "hella-empty" && WINNER[ndx] === "empty") {
+                    return true
+                }
+                return f === WINNER[ndx]
+            })
+        ) {
+            setInterval(() => {
+                setWinner(true)
+                setTimeout(() => {
+                    setWinner(false)
+                }, 1000)
+            }, 2000)
+        }
+    }, [filled])
+
     const [ignoreClickOnce, setIgnoreClickOnce] = useState(false)
 
     return (
         <div className="flex flex-row items-center">
+            {winner && <ConfettiExplosion />}
             <div className="width-full subtle-text-shadow-red text-center text-8xl text-red-500">-</div>
             <RowTotaller side="left" targets={leftColumn} fillState={filled} />
             <div className="flex flex-col">
@@ -147,6 +208,7 @@ export function BatteryGrid() {
             </div>
             <RowTotaller side="right" targets={rightColumn} fillState={filled} />
             <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
+            {winner && <ConfettiExplosion />}
         </div>
     )
 }
