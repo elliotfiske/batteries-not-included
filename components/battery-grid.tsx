@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { fill } from "lodash"
 import { RowTotaller } from "./row-totaller"
 import { BatteryTile } from "./BatteryTile"
@@ -87,7 +87,24 @@ function markDefinitelyEmpty(fills: Fill[], ndx: number) {
 }
 
 export function BatteryGrid() {
-    const [filled, setFilled] = useState<Array<Fill>>(fill(Array(36), "empty"))
+    const [filled, setFilled] = useState<Array<Fill>>(() => {
+        return fill(Array(36), "empty")
+    })
+
+    useEffect(() => {
+        const saved = localStorage.getItem("saved-filled")
+
+        try {
+            if (saved) {
+                setFilled(JSON.parse(saved))
+            }
+        } catch (e) {}
+    }, [])
+
+    const setFilledAndSave = useCallback((newFilled: Fill[]) => {
+        setFilled(newFilled)
+        window.localStorage.setItem("saved-filled", JSON.stringify(newFilled))
+    }, [])
 
     const [ignoreClickOnce, setIgnoreClickOnce] = useState(false)
 
@@ -110,11 +127,11 @@ export function BatteryGrid() {
                                     }
 
                                     const newFill = toggleFillState(filled, ndx)
-                                    setFilled(newFill)
+                                    setFilledAndSave(newFill)
                                 }}
                                 onLongPress={() => {
                                     const newFill = markDefinitelyEmpty(filled, ndx)
-                                    setFilled(newFill)
+                                    setFilledAndSave(newFill)
 
                                     setIgnoreClickOnce(true)
                                 }}
