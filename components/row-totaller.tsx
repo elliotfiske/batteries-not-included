@@ -62,7 +62,7 @@ export function RowTotaller(props: Props) {
         <React.Fragment>
             <div className={`flex ${isHorizontal ? "flex-row" : "flex-col"}`}>
                 {range(0, 6).map((i) => {
-                    const correct = props.targets[i] === totals[i]
+                    const correct = totals[i] >= props.targets[i]
                     let correctClass = null
                     if (correct) {
                         if (isPositive) {
@@ -72,9 +72,16 @@ export function RowTotaller(props: Props) {
                         }
                     }
 
+                    let overageClass = ""
+                    if (totals[i] > props.targets[i]) {
+                        overageClass = "wiggle-infinite"
+                    }
+
                     return (
                         <div
-                            className={`flex ${rowSize} ${items} ${justify} ${correctClass ?? textColor} text-3xl`}
+                            className={`flex ${rowSize} ${items} ${justify} ${
+                                correctClass ?? textColor
+                            } ${overageClass} text-3xl`}
                             key={i}
                         >
                             {totals[i]}/{props.targets[i]}

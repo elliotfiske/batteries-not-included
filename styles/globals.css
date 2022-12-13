@@ -81,8 +81,32 @@
         }
     }
 
+    @keyframes wiggle {
+        0% {
+            transform: rotate(10deg);
+        }
+        25% {
+            transform: rotate(-10deg);
+            transform: translate(-5px, -3px);
+        }
+        50% {
+            transform: rotate(30deg);
+        }
+        75% {
+            transform: rotate(-15deg);
+        }
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
     .flicker-on {
         animation: flicker 1s none;
         animation-timing-function: step-start;
+    }
+
+    .wiggle-infinite {
+        animation: wiggle 0.3s infinite;
+        animation-timing-function: linear;
     }
 }
