@@ -9,17 +9,17 @@ export const RideTheLightning = () => {
     return (
         <div className="absolute h-24 w-24">
             <img
-                src={"../public/lightning_white.svg"}
+                src={"https://elliotfiske.github.io/tb-santa-jam-2022/lightning_white.svg"}
                 className={`fade-out absolute top-16 left-8 h-12 w-12 opacity-0`}
                 style={{ animationDelay: `${randoms[0]}s` }}
             />
             <img
-                src={"../public/lightning_white.svg"}
+                src={"https://elliotfiske.github.io/tb-santa-jam-2022/lightning_white.svg"}
                 className={`fade-out absolute top-16 left-8 h-12 w-12 rotate-180 opacity-0`}
                 style={{ animationDelay: `${randoms[1]}s` }}
             />
             <img
-                src={"/lightning_white.svg"}
+                src={"https://elliotfiske.github.io/tb-santa-jam-2022/lightning_white.svg"}
                 className={`fade-out absolute top-16 left-8 h-12 w-12 rotate-180 scale-x-[-100%] opacity-0`}
                 style={{ animationDelay: `${randoms[2]}s` }}
             />
