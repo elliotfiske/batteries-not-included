@@ -1,6 +1,7 @@
 import React from "react"
 import { Fill } from "./battery-grid"
 import useLongPress from "../hooks/use-long-press"
+import { RideTheLightning } from "./ride-the-lightning"
 
 function classFromFill(fill: Fill) {
     switch (fill) {
@@ -82,6 +83,8 @@ export function BatteryTile(props: {
     onLongPress: () => void
     i: FlatArray<number[][], 1>
     filled: Array<Fill>
+    dangerRight: boolean
+    dangerDown: boolean
     ndx: number
 }) {
     const [clicksDisabled, setClicksDisabled] = React.useState(false)
@@ -93,7 +96,7 @@ export function BatteryTile(props: {
 
     return (
         <div
-            className={`h-24 w-24 cursor-pointer select-none border border-dashed border-gray-600 text-white`}
+            className={`relative h-24 w-24 cursor-pointer select-none border border-dashed border-gray-600 text-white`}
             onClick={props.onClick}
             onMouseUpCapture={(e) => {
                 if (clicksDisabled) {
@@ -104,6 +107,12 @@ export function BatteryTile(props: {
             }}
             {...attrs}
         >
+            {props.dangerDown && <RideTheLightning />}
+            {props.dangerRight && (
+                <div className="absolute top-0 left-48 -z-10 rotate-90">
+                    <RideTheLightning />
+                </div>
+            )}
             {props.i == 0 && <ZeroGuy fill={props.filled[props.ndx]} />}
             {props.i == 1 && <OneGuy fill={props.filled[props.ndx]} />}
             {props.i == 2 && <TwoGuy fill={props.filled[props.ndx]} />}

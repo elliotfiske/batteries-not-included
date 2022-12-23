@@ -74,7 +74,7 @@ export function RowTotaller(props: Props) {
 
                     let overageClass = ""
                     if (totals[i] > props.targets[i]) {
-                        overageClass = "wiggle-infinite"
+                        overageClass = "flicker-1"
                     }
 
                     return (

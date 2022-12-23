@@ -126,6 +126,32 @@ function markDefinitelyEmpty(fills: Fill[], ndx: number) {
     return newFills
 }
 
+function findAdjacentRedsOrGreens(fills: Fill[]) {
+    const verticalDanger: number[] = []
+    const horizontalDanger: number[] = []
+
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 5; j++) {
+            if (fills[i * 6 + j] === "red" && fills[i * 6 + j + 1] === "red") {
+                horizontalDanger.push(i * 6 + j)
+            }
+
+            if (fills[j * 6 + i] === "red" && fills[(j + 1) * 6 + i] === "red") {
+                verticalDanger.push(j * 6 + i)
+            }
+
+            if (fills[i * 6 + j] === "green" && fills[i * 6 + j + 1] === "green") {
+                horizontalDanger.push(i * 6 + j)
+            }
+            if (fills[j * 6 + i] === "green" && fills[(j + 1) * 6 + i] === "green") {
+                verticalDanger.push(j * 6 + i)
+            }
+        }
+    }
+
+    return [horizontalDanger, verticalDanger]
+}
+
 export function BatteryGrid() {
     const [filled, setFilled] = useState<Array<Fill>>(() => {
         return fill(Array(36), "empty")
@@ -141,6 +167,8 @@ export function BatteryGrid() {
         } catch (e) {}
     }, [])
 
+    const [horizontalDanger, verticalDanger] = findAdjacentRedsOrGreens(filled)
+
     const setFilledAndSave = useCallback((newFilled: Fill[]) => {
         setFilled(newFilled)
         window.localStorage.setItem("saved-filled", JSON.stringify(newFilled))
@@ -149,6 +177,7 @@ export function BatteryGrid() {
     const [winner, setWinner] = useState(false)
 
     useEffect(() => {
+        let clearMe: NodeJS.Timer
         if (
             filled.every((f, ndx) => {
                 if (f === "hella-empty" && WINNER[ndx] === "empty") {
@@ -157,12 +186,18 @@ export function BatteryGrid() {
                 return f === WINNER[ndx]
             })
         ) {
-            setInterval(() => {
+            clearMe = setInterval(() => {
                 setWinner(true)
                 setTimeout(() => {
                     setWinner(false)
                 }, 1000)
             }, 2000)
+        }
+
+        return () => {
+            if (clearMe) {
+                clearInterval(clearMe)
+            }
         }
     }, [filled])
 
@@ -178,6 +213,9 @@ export function BatteryGrid() {
                 <RowTotaller side="top" targets={topRow} fillState={filled} />
                 <div className="grid grid-cols-6">
                     {grid.map((i, ndx) => {
+                        const dangerRight = horizontalDanger.includes(ndx)
+                        const dangerDown = verticalDanger.includes(ndx)
+
                         return (
                             <BatteryTile
                                 key={ndx}
@@ -198,6 +236,8 @@ export function BatteryGrid() {
                                 }}
                                 i={i}
                                 filled={filled}
+                                dangerRight={dangerRight}
+                                dangerDown={dangerDown}
                                 ndx={ndx}
                             />
                         )
