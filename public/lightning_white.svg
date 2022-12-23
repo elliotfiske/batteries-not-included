@@ -1,0 +1,11 @@
+<svg width="200" height="600" xmlns="http://www.w3.org/2000/svg">
+ <title>Lightning</title>
+
+ <g>
+  <title>Layer 1</title>
+  <line stroke-width="20" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="186.07143" x2="107.85714" y1="-16.92857" x1="20.85714" stroke="#ffffff" fill="none"/>
+  <line transform="rotate(45.5787 74.1905 273.905)" stroke="#ffffff" stroke-width="20" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_3" y2="364.43446" x2="118.64038" y1="183.37508" x1="29.74057" fill="none"/>
+  <path transform="rotate(-17.8637 109.714 432)" id="svg_4" d="m65.26439,341.47034l88.8998,181.05938" opacity="undefined" stroke-linecap="undefined" stroke-linejoin="undefined" stroke-width="20" stroke="#ffffff" fill="none"/>
+  <path transform="rotate(54.7008 129.714 580.688)" id="svg_1" d="m85.26448,490.15805l88.89981,181.05938" opacity="undefined" stroke-linecap="undefined" stroke-linejoin="undefined" stroke-width="20" stroke="#ffffff" fill="none"/>
+ </g>
+</svg>

@@ -49,8 +49,7 @@
     @keyframes flicker {
         0% {
             color: white;
-            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
-            0px 0px 2px rgba(0, 206, 0, 0);
+            text-shadow: inherit;
         }
         9% {
             color: grey;
@@ -58,8 +57,7 @@
         }
         24% {
             color: white;
-            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
-            0px 0px 2px rgba(0, 206, 0, 0);
+            text-shadow: inherit;
         }
         54% {
             color: grey;
@@ -67,8 +65,7 @@
         }
         79% {
             color: white;
-            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
-            0px 0px 2px rgba(0, 206, 0, 0);
+            text-shadow: inherit;
         }
         92% {
             color: grey;
@@ -76,8 +73,7 @@
         }
         96% {
             color: white;
-            text-shadow: 0 0 5px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18,
-            0px 0px 2px rgba(0, 206, 0, 0);
+            text-shadow: inherit;
         }
     }
 
@@ -99,9 +95,16 @@
         }
     }
 
+    .flicker-on-2 {
+        animation: flicker 0.5s none;
+        animation-timing-function: step-start;
+        animation-fill-mode: backwards;
+    }
+
     .flicker-on {
         animation: flicker 1s none;
         animation-timing-function: step-start;
+        animation-fill-mode: backwards;
     }
 
     .wiggle-infinite {

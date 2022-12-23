@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useContext, useEffect, useState } from "react"
 import { fill } from "lodash"
 import { RowTotaller } from "./row-totaller"
 import { BatteryTile } from "./BatteryTile"
 import ConfettiExplosion from "react-confetti-explosion"
+import { ModalContext } from "../pages"
 
 const WINNER = [
     "green",
@@ -12,23 +13,23 @@ const WINNER = [
     "green",
     "red",
     "red",
-    "hella-empty",
+    "empty",
     "green",
     "red",
-    "hella-empty",
+    "empty",
     "green",
     "green",
-    "hella-empty",
+    "empty",
     "red",
     "green",
-    "hella-empty",
+    "empty",
     "red",
-    "hella-empty",
-    "hella-empty",
+    "empty",
+    "empty",
     "green",
     "red",
-    "hella-empty",
-    "hella-empty",
+    "empty",
+    "empty",
     "red",
     "green",
     "red",
@@ -126,30 +127,36 @@ function markDefinitelyEmpty(fills: Fill[], ndx: number) {
     return newFills
 }
 
-function findAdjacentRedsOrGreens(fills: Fill[]) {
+function findAdjacentRedsOrGreens(fills: Fill[]): [number[], number[], boolean, boolean] {
     const verticalDanger: number[] = []
     const horizontalDanger: number[] = []
+    let redFault = false
+    let greenFault = false
 
     for (let i = 0; i < 6; i++) {
         for (let j = 0; j < 5; j++) {
             if (fills[i * 6 + j] === "red" && fills[i * 6 + j + 1] === "red") {
                 horizontalDanger.push(i * 6 + j)
+                redFault = true
             }
 
             if (fills[j * 6 + i] === "red" && fills[(j + 1) * 6 + i] === "red") {
                 verticalDanger.push(j * 6 + i)
+                redFault = true
             }
 
             if (fills[i * 6 + j] === "green" && fills[i * 6 + j + 1] === "green") {
                 horizontalDanger.push(i * 6 + j)
+                greenFault = true
             }
             if (fills[j * 6 + i] === "green" && fills[(j + 1) * 6 + i] === "green") {
                 verticalDanger.push(j * 6 + i)
+                greenFault = true
             }
         }
     }
 
-    return [horizontalDanger, verticalDanger]
+    return [horizontalDanger, verticalDanger, redFault, greenFault]
 }
 
 export function BatteryGrid() {
@@ -167,88 +174,78 @@ export function BatteryGrid() {
         } catch (e) {}
     }, [])
 
-    const [horizontalDanger, verticalDanger] = findAdjacentRedsOrGreens(filled)
+    const [horizontalDanger, verticalDanger, redFault, greenFault] = findAdjacentRedsOrGreens(filled)
 
     const setFilledAndSave = useCallback((newFilled: Fill[]) => {
         setFilled(newFilled)
         window.localStorage.setItem("saved-filled", JSON.stringify(newFilled))
     }, [])
 
-    const [winner, setWinner] = useState(false)
+    const modalContext = useContext(ModalContext)
 
     useEffect(() => {
-        let clearMe: NodeJS.Timer
-        if (
-            filled.every((f, ndx) => {
-                if (f === "hella-empty" && WINNER[ndx] === "empty") {
-                    return true
-                }
-                return f === WINNER[ndx]
-            })
-        ) {
-            clearMe = setInterval(() => {
-                setWinner(true)
-                setTimeout(() => {
-                    setWinner(false)
-                }, 1000)
-            }, 2000)
-        }
-
-        return () => {
-            if (clearMe) {
-                clearInterval(clearMe)
+        const didWin = filled.every((f, ndx) => {
+            if (f === "hella-empty" && WINNER[ndx] === "empty") {
+                return true
             }
-        }
+            return f === WINNER[ndx]
+        })
+
+        modalContext.setOpen(didWin)
     }, [filled])
 
     const [ignoreClickOnce, setIgnoreClickOnce] = useState(false)
 
     return (
-        <div className="flex flex-row items-center">
-            {winner && <ConfettiExplosion />}
-            <div className="width-full subtle-text-shadow-red text-center text-8xl text-red-500">-</div>
-            <RowTotaller side="left" targets={leftColumn} fillState={filled} />
-            <div className="flex flex-col">
-                <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
-                <RowTotaller side="top" targets={topRow} fillState={filled} />
-                <div className="grid grid-cols-6">
-                    {grid.map((i, ndx) => {
-                        const dangerRight = horizontalDanger.includes(ndx)
-                        const dangerDown = verticalDanger.includes(ndx)
+        <div className="flex flex-col justify-center">
+            {redFault && <span className="text-shadow-red text-3xl">FAULT: Negative next to negative</span>}
+            {!redFault && <span className="text-3xl">&nbsp;</span>}
+            {greenFault && <span className="text-shadow-green text-3xl">FAULT: Positive next to positive</span>}
+            {!greenFault && <span className="text-3xl">&nbsp;</span>}
+            <div className="flex flex-row items-center">
+                <div className="width-full subtle-text-shadow-red text-center text-8xl text-red-500">-</div>
+                <RowTotaller side="left" targets={leftColumn} fillState={filled} />
+                <div className="flex flex-col">
+                    <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
+                    <RowTotaller side="top" targets={topRow} fillState={filled} />
+                    <div className="grid grid-cols-6">
+                        {grid.map((i, ndx) => {
+                            const dangerRight = horizontalDanger.includes(ndx)
+                            const dangerDown = verticalDanger.includes(ndx)
 
-                        return (
-                            <BatteryTile
-                                key={ndx}
-                                onClick={() => {
-                                    if (ignoreClickOnce) {
-                                        setIgnoreClickOnce(false)
-                                        return
-                                    }
+                            return (
+                                <BatteryTile
+                                    key={ndx}
+                                    onClick={() => {
+                                        if (ignoreClickOnce) {
+                                            setIgnoreClickOnce(false)
+                                            return
+                                        }
 
-                                    const newFill = toggleFillState(filled, ndx)
-                                    setFilledAndSave(newFill)
-                                }}
-                                onLongPress={() => {
-                                    const newFill = markDefinitelyEmpty(filled, ndx)
-                                    setFilledAndSave(newFill)
+                                        const newFill = toggleFillState(filled, ndx)
+                                        setFilledAndSave(newFill)
+                                    }}
+                                    onLongPress={() => {
+                                        const newFill = markDefinitelyEmpty(filled, ndx)
+                                        setFilledAndSave(newFill)
 
-                                    setIgnoreClickOnce(true)
-                                }}
-                                i={i}
-                                filled={filled}
-                                dangerRight={dangerRight}
-                                dangerDown={dangerDown}
-                                ndx={ndx}
-                            />
-                        )
-                    })}
+                                        setIgnoreClickOnce(true)
+                                    }}
+                                    i={i}
+                                    filled={filled}
+                                    dangerRight={dangerRight}
+                                    dangerDown={dangerDown}
+                                    ndx={ndx}
+                                />
+                            )
+                        })}
+                    </div>
+                    <RowTotaller side="bottom" targets={bottomRow} fillState={filled} />
+                    <div className="width-full subtle-text-shadow-red z-10  text-center text-8xl text-red-500">-</div>
                 </div>
-                <RowTotaller side="bottom" targets={bottomRow} fillState={filled} />
-                <div className="width-full subtle-text-shadow-red z-10  text-center text-8xl text-red-500">-</div>
+                <RowTotaller side="right" targets={rightColumn} fillState={filled} />
+                <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
             </div>
-            <RowTotaller side="right" targets={rightColumn} fillState={filled} />
-            <div className="width-full subtle-text-shadow-green  text-center text-8xl text-green-500">+</div>
-            {winner && <ConfettiExplosion />}
         </div>
     )
 }
