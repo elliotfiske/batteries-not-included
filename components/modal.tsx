@@ -72,15 +72,16 @@ export const Modal = () => {
                                         A winner is you!
                                     </h3>
                                     <div className="mt-2">
+                                        <ConfettiExplosion />
                                         <p className="text-sm text-gray-500">
                                             You did it! Share this puzzle to see if your friends can do it too:
                                             <br />
                                             <a
                                                 className="cursor-pointer underline"
-                                                onClick={() => {
+                                                onClick={async () => {
                                                     try {
-                                                        navigator.clipboard.writeText(
-                                                            "https://elliotfiske.github.io/tb-santa-jam-2022/",
+                                                        await navigator.clipboard.writeText(
+                                                            "https://elliotfiske.github.io/batteries-not-included/",
                                                         )
                                                         setCopySuccess(true)
                                                     } catch (err: any) {
